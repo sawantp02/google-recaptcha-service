@@ -1,0 +1,67 @@
+<html>
+<head>
+<title>reCAPTCHA demo: Simple page</title>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+	/* var $jq = jQuery.noConflict();
+	$("#signup-form").submit(function(event){
+		/* var captcha = grecaptcha.getResponse();
+		var response = $jq.get("http://localhost:8080/captcha/v1/verify/"+captcha);
+		var obj = $jq.parseJSON(response);
+		alert(obj); */
+		/*event.preventDefault();
+		var captcha = grecaptcha.getResponse();
+		$jq.ajax({
+			type : "GET",
+			url : "http://localhost:8080/captcha/v1/verify/" + captcha,
+			beforeSend : function(xhr) {
+				xhr.setRequestHeader('x-forwarded-for', 'localhost');
+			}
+		}).done(function(response) {
+            $("#server-results").html(response);
+		});
+	}); */
+	
+	
+
+	$(document).ready(function() {
+		$('#submit').click(function() {
+			//alert("function called");
+			event.preventDefault();
+			var $jq = jQuery.noConflict();
+
+			
+			var captcha = grecaptcha.getResponse();
+			$jq.ajax({
+				type : "GET",
+				url : "http://localhost:8080/captcha/v1/verify/" + captcha,
+				headers: {
+                    'Access-Control-Allow-Origin': '*'
+                },
+				beforeSend : function(xhr) {
+					xhr.setRequestHeader('x-forwarded-for', 'localhost');
+					/* xhr.setResponseHeader('Access-Control-Allow-Origin', ['*']);
+					xhr.setResponseHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+					xhr.setResponseHeader('Access-Control-Allow-Headers', 'x-forwarded-for, Origin, Content-Type, Accept'); */
+				}
+			}).done(function(response) {
+				document.getElementById("json").innerHTML = JSON.stringify(response, undefined, 2);
+			});
+		});
+	});
+</script>
+</head>
+<body>
+	<form id="signup-form" name="signup-form">
+		<div class="form-group">
+			<div class="g-recaptcha"
+				data-sitekey="6LeXaXwUAAAAABmpLNAMIkgeq8iVaaLpQm3gyzoR"></div>
+		</div>
+
+		<input type="submit" id="submit" value="Submit">
+		<pre id="json"></pre>
+	</form>
+</body>
+</html>
